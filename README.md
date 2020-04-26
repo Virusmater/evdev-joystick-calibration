@@ -1,5 +1,5 @@
 # evdev-joystick-calibration
-Run, pick up the gamepad and turn sticks with triggers around
+Run, pick up the gamepad and turn sticks with triggers around. The configuration will persist till a reconnect (see todo)
 # example
 ```bash
 kompot@pc:~/evdev-joystick-calibration$ python3 __main__.py 
@@ -27,3 +27,7 @@ kompot@pc:~$ cat /etc/udev/rules.d/99-wiimote.rules
 SUBSYSTEM=="input", ATTRS{name}=="Nintendo Wii Remote Classic Controller", MODE="0666", ENV{ID_INPUT_JOYSTICK}="1", ENV{ID_INPUT_KEY}="0"
 
 ```
+# todo
+Save configuration to a file and automatically load on the connection
+
+Package for distros
