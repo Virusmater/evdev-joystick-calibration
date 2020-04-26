@@ -1,5 +1,7 @@
 # evdev-joystick-calibration
-Run, pick up the gamepad and turn sticks with triggers around. The configuration will persist till a reconnect (see todo)
+Run, pick up the gamepad and turn sticks with triggers around. 
+
+The configuration will persist till a reconnect (see todo)
 # example
 ```bash
 kompot@pc:~/evdev-joystick-calibration$ python3 __main__.py 
@@ -21,6 +23,7 @@ analog: ABS_HAT3Y  min:2 max:42
 ```
 # requirements
 https://github.com/gvalkov/python-evdev
+
 The user should be able to write to the evdev device. Example of udev rule for Nintendo Wii Remote Classic Controller
 ```bash
 kompot@pc:~$ cat /etc/udev/rules.d/99-wiimote.rules 
