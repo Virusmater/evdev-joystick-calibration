@@ -1,20 +1,39 @@
+import argparse
+
 import evdev
-from evdev import InputDevice, ecodes
+from evdev import ecodes
+
+import configuration
+from MinMaxItem import MinMaxItem
 
 
-class MinMaxItem:
-    def __init__(self, analog, minimum, maximum):
-        self.minimum = minimum
-        self.maximum = maximum
-        self.analog = analog
+def apply(dev, conf):
+    print("\rConfiguration for", device.name)
+    for conf_code in conf:
+        print(conf[conf_code])
+        dev.set_absinfo(int(conf_code), min=conf[conf_code].minimum, max=conf[conf_code].maximum)
 
-    def __str__(self):
-        return "analog: " + self.analog + " min:" + str(self.minimum) + " max:" + str(self.maximum)
 
+parser = argparse.ArgumentParser(description='Pick up the gamepad and turn sticks with triggers around')
+parser.add_argument('-l', '--load', action='store_true', help='load configuration')
+args = parser.parse_args()
+devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
+
+# If only load configuration - load available and exit
+if args.load:
+    for index, device in enumerate(devices):
+        caps = device.capabilities()
+        if ecodes.EV_ABS in device.capabilities():
+            try:
+                apply(device, configuration.load(device.name))
+            except FileNotFoundError:
+                print("Skip", device.name)
+            finally:
+                device.close()
+    exit()
 
 # get all devices with analogs
 print('Available devices:')
-devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
 for index, device in enumerate(devices):
     caps = device.capabilities()
     if ecodes.EV_ABS in device.capabilities():
@@ -24,12 +43,11 @@ print('Pick one device for the calibration:', end=" ")
 index = int(input())
 print('Move sticks and triggers of', devices[index].name, 'to max and min positions.')
 print('Press any button to apply.')
-device_path = devices[index].path
 
 min_max = {}
-dev = InputDevice(device_path)
+device = devices[index]
 
-for event in dev.read_loop():
+for event in device.read_loop():
     # exit if a regular key was pressed
     if event.type == ecodes.EV_KEY:
         break
@@ -45,11 +63,6 @@ for event in dev.read_loop():
         analog_name = str(evdev.categorize(event)).partition(", ")[2]
         print("\r" + str(min_max[event.code]), "   ", end=" ")
 
-print("\rNew configuration:", "              ")
-for code in min_max:
-    print(min_max[code])
-    dev.set_absinfo(code,  min=min_max[code].minimum, max=min_max[code].maximum)
-
-dev.close()
-
-
+apply(device, min_max)
+configuration.store(device.name, min_max)
+device.close()
