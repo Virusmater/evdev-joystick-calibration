@@ -6,16 +6,9 @@ from evdev import ecodes
 import configuration
 from MinMaxItem import MinMaxItem
 
-
-def apply(dev, conf):
-    print("\rConfiguration for", device.name)
-    for conf_code in conf:
-        print(conf[conf_code])
-        dev.set_absinfo(int(conf_code), min=conf[conf_code].minimum, max=conf[conf_code].maximum)
-
-
 parser = argparse.ArgumentParser(description='Pick up the gamepad and turn sticks with triggers around')
 parser.add_argument('-l', '--load', action='store_true', help='load configuration')
+parser.add_argument('-c', '--calibrate', action='store_true', help='calibrate and save configuration')
 args = parser.parse_args()
 devices = [evdev.InputDevice(path) for path in evdev.list_devices()]
 
@@ -25,7 +18,7 @@ if args.load:
         caps = device.capabilities()
         if ecodes.EV_ABS in device.capabilities():
             try:
-                apply(device, configuration.load(device.name))
+                configuration.apply(device, configuration.load(device.name))
             except FileNotFoundError:
                 print("Skip", device.name)
             finally:
@@ -63,6 +56,6 @@ for event in device.read_loop():
         analog_name = str(evdev.categorize(event)).partition(", ")[2]
         print("\r" + str(min_max[event.code]), "   ", end=" ")
 
-apply(device, min_max)
+configuration.apply(device, min_max)
 configuration.store(device.name, min_max)
 device.close()
