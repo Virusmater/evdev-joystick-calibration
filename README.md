@@ -12,7 +12,9 @@ optional arguments:
   -c, --calibrate  calibrate and save configuration
 ```
 # install
+```bash
 kompot@pc:~$ sudo pip3 install ./evdev-joystick-calibration
+```
 # example
 ## calibrate
 ```bash
