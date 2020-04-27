@@ -1,8 +1,8 @@
 # evdev-joystick-calibration
 Run, pick up the gamepad and turn sticks with triggers around. 
 ```bash
-python3 __main__.py -h
-usage: __main__.py [-h] [-l] [-c]
+evdev-joystick-calibration -h
+usage: evdev-joystick-calibration [-h] [-l] [-c]
 
 Pick up the gamepad and turn sticks with triggers around
 
@@ -11,10 +11,12 @@ optional arguments:
   -l, --load       load configuration
   -c, --calibrate  calibrate and save configuration
 ```
+# install
+kompot@pc:~$ sudo pip3 install ./evdev-joystick-calibration
 # example
 ## calibrate
 ```bash
-kompot@pc:~/evdev-joystick-calibration$ python3 __main__.py -c
+kompot@pc:~$ evdev-joystick-calibration -c
 Available devices:
 0 Nintendo Wii Remote Classic Controller
 2 Nintendo Wii Remote IR
@@ -34,7 +36,7 @@ Configuration for Nintendo Wii Remote Classic Controller saved at /home/kompot/.
 ```
 ## load
 ```bash
-kompot@pc:~/evdev-joystick-calibration$ python3 __main__.py -l
+kompot@pc:~$ evdev-joystick-calibration -l
 Configuration for Nintendo Wii Remote Classic Controller loaded from /home/kompot/.config/evdev-joystick-calibration/NintendoWiiRemoteClassicController.json
 Configuration for Nintendo Wii Remote Classic Controller
 analog: ABS_HAT1Y  min:-28 max:25
