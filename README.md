@@ -13,7 +13,8 @@ optional arguments:
 ```
 # install
 ```bash
-kompot@pc:~$ sudo pip3 install ./evdev-joystick-calibration
+kompot@pc:~$ sudo apt install python3-pip git -y
+kompot@pc:~$ sudo pip3 install git+https://github.com/Virusmater/evdev-joystick-calibration
 ```
 # example
 ## calibrate
