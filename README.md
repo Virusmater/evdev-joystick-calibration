@@ -62,7 +62,9 @@ SUBSYSTEM=="input", ATTRS{name}=="Nintendo Wii Remote Classic Controller", MODE=
 ```
 # auto load configuration on connect
 1. Run calibration **as root** (unfortunatelly all udev rules are executed under root and there is no way to get current user. if you know how to avoid it - please let me know):
-`kompot@pc:~$ sudo evdev-joystick-calibration -c`
+```bash
+kompot@pc:~$ sudo evdev-joystick-calibration -c
+```
 2. Make new udev rule for add action:
 ```bash
 kompot@pc:~$ sudo nano /etc/udev/rules.d/99-wiimote.rules 
@@ -70,4 +72,6 @@ SUBSYSTEM=="input", ATTRS{name}=="Nintendo Wii Remote Classic Controller", MODE=
 SUBSYSTEM=="input", KERNEL=="event*", ACTION=="add", ATTRS{name}=="Nintendo Wii Remote Classic Controller", RUN+="/bin/sh -c 'evdev-joystick-calibration -l'"
 ```
 3. Reload rules:
-`sudo udevadm control --reload-rules`
+```bash
+sudo udevadm control --reload-rules
+```
