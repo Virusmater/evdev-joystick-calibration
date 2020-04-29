@@ -11,6 +11,6 @@ setup(
     install_requires=['evdev'],
     packages=find_packages(),
     entry_points=dict(
-        console_scripts=['evdev-joystick-calibration=src.__main__:main']
+        console_scripts=['evdev-joystick-calibration=evdev_joystick_calibration.__main__:main']
     )
 )

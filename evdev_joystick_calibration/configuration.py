@@ -2,7 +2,7 @@ import json
 import os
 from os.path import expanduser
 
-from src.MinMaxItem import MinMaxItemEncoder, object_decoder
+from evdev_joystick_calibration.MinMaxItem import MinMaxItemEncoder, object_decoder
 
 conf_path = expanduser("~") + "/.config/evdev-joystick-calibration/"
 

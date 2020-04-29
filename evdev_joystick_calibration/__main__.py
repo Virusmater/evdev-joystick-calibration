@@ -3,8 +3,8 @@ import argparse
 import evdev
 from evdev import ecodes
 
-from src import configuration
-from src.MinMaxItem import MinMaxItem
+from evdev_joystick_calibration import configuration
+from evdev_joystick_calibration.MinMaxItem import MinMaxItem
 
 
 def main():
