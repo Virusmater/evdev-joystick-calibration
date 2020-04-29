@@ -12,7 +12,10 @@ optional arguments:
   -c, --calibrate  calibrate and save configuration
 ```
 # install
-kompot@pc:~$ sudo pip3 install ./evdev-joystick-calibration
+```bash
+kompot@pc:~$ sudo apt install python3-pip git -y
+kompot@pc:~$ sudo pip3 install git+https://github.com/Virusmater/evdev-joystick-calibration
+```
 # example
 ## calibrate
 ```bash
@@ -54,10 +57,21 @@ https://github.com/gvalkov/python-evdev
 
 The user should be able to write to the evdev device. Example of udev rule for Nintendo Wii Remote Classic Controller
 ```bash
-kompot@pc:~$ cat /etc/udev/rules.d/99-wiimote.rules 
+kompot@pc:~$ sudo nano /etc/udev/rules.d/99-wiimote.rules 
 SUBSYSTEM=="input", ATTRS{name}=="Nintendo Wii Remote Classic Controller", MODE="0666", ENV{ID_INPUT_JOYSTICK}="1", ENV{ID_INPUT_KEY}="0"
 ```
-# todo
-Save configuration to a file and automatically load on the connection
-
-Package for distros
+# auto load configuration on connect
+1. Run calibration **as root** (unfortunatelly all udev rules are executed under root and there is no way to get current user. if you know how to avoid it - please let me know):
+```bash
+kompot@pc:~$ sudo evdev-joystick-calibration -c
+```
+2. Make new udev rule for add action:
+```bash
+kompot@pc:~$ sudo nano /etc/udev/rules.d/99-wiimote.rules 
+SUBSYSTEM=="input", ATTRS{name}=="Nintendo Wii Remote Classic Controller", MODE="0666", ENV{ID_INPUT_JOYSTICK}="1", ENV{ID_INPUT_KEY}="0"
+SUBSYSTEM=="input", KERNEL=="event*", ACTION=="add", ATTRS{name}=="Nintendo Wii Remote Classic Controller", RUN+="/bin/sh -c 'evdev-joystick-calibration -l'"
+```
+3. Reload rules:
+```bash
+sudo udevadm control --reload-rules
+```
