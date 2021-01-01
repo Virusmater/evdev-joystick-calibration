@@ -17,7 +17,6 @@ def main():
     # If only load configuration - load available and exit
     if args.load:
         for index, device in enumerate(devices):
-            caps = device.capabilities()
             if ecodes.EV_ABS in device.capabilities():
                 try:
                     configuration.apply(device, configuration.load(device.name))
@@ -30,10 +29,8 @@ def main():
     # get all devices with analogs
     print('Available devices:')
     for index, device in enumerate(devices):
-        caps = device.capabilities()
         if ecodes.EV_ABS in device.capabilities():
             print(index, device.name)
-            device_path = device.path
     print('Pick one device for the calibration:', end=" ")
     index = int(input())
     print('Move sticks and triggers of', devices[index].name, 'to max and min positions.')
@@ -41,22 +38,29 @@ def main():
 
     min_max = {}
     device = devices[index]
-
-    for event in device.read_loop():
-        # exit if a regular key was pressed
-        if event.type == ecodes.EV_KEY:
-            break
-        if event.type == ecodes.EV_ABS:
-            if event.code not in min_max:
+    try:
+        for event in device.read_loop():
+            # exit if a regular key was pressed
+            if event.type == ecodes.EV_KEY:
+                break
+            if event.type == ecodes.EV_ABS:
+                if event.code not in min_max:
+                    analog_name = str(evdev.categorize(event)).partition(", ")[2]
+                    min_max[event.code] = MinMaxItem(analog_name, event.value, event.value)
+                if min_max[event.code].minimum > event.value:
+                    min_max[event.code].minimum = event.value
+                if min_max[event.code].maximum < event.value:
+                    min_max[event.code].maximum = event.value
+                # best way I was able to get name of the analog
                 analog_name = str(evdev.categorize(event)).partition(", ")[2]
-                min_max[event.code] = MinMaxItem(analog_name, event.value, event.value)
-            if min_max[event.code].minimum > event.value:
-                min_max[event.code].minimum = event.value
-            if min_max[event.code].maximum < event.value:
-                min_max[event.code].maximum = event.value
-            # best way I was able to get name of the analog
-            analog_name = str(evdev.categorize(event)).partition(", ")[2]
-            print("\r" + str(min_max[event.code]), "   ", end=" ")
+                print("\r" + str(min_max[event.code]), "   ", end=" ")
+    except KeyboardInterrupt:
+        print('\rSave and apply the configuration? (y/n)', end=" ")
+        answer = str(input())
+        if answer == "y":
+            pass
+        else:
+            exit()
 
     configuration.apply(device, min_max)
     configuration.store(device.name, min_max)
