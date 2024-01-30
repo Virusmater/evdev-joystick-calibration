@@ -1,4 +1,8 @@
+Archived, please use [https://github.com/nick-l-o3de/evdev-joystick-calibration](https://github.com/nick-l-o3de/evdev-joystick-calibration) instead 
+
 # evdev-joystick-calibration
+
+
 Run, pick up the gamepad and turn sticks with triggers around. 
 ```bash
 evdev-joystick-calibration -h
